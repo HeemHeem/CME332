@@ -1,0 +1,3 @@
+13:07:54 **** Clean-only build of configuration Nios II for project ex6_ucosii_mutex ****
+make clean 
+[ex6_ucosii_mutex clean complete]

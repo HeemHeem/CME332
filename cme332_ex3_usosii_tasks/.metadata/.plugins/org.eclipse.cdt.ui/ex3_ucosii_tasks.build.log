@@ -1,0 +1,9 @@
+19:31:19 **** Incremental Build of configuration Nios II for project ex3_ucosii_tasks ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/cme332_ex3_usosii_tasks/ex3_ucosii_tasks_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/cme332_ex3_usosii_tasks/ex3_ucosii_tasks_bsp/
+[BSP build complete]
+[ex3_ucosii_tasks build complete]
+
+19:31:19 Build Finished (took 208ms)
+

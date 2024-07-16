@@ -1,0 +1,87 @@
+====================
+List of Event Flag(s)
+====================
+Name: 		EngineFlags
+Size:		4 bits
+Event(s):	Gear_Park = 0x1, Gear_Drive = 0x2, Cruise = 0x4, Engine = 0x8
+Pend Task(s):	IO_task, engine_task, vehicle_task 
+Post Task(s):	IO_task
+--------------------------------------------------------------------------------
+
+
+====================
+List of Semaphore(s)
+====================
+Name: 		Key_Fob_Sem
+Resource(s):	key_fob,engine
+Pend Task(s):	IO_task, engine_task
+Post Task(s):	IO_task, engine_task
+--------------------------------------------------------------------------------
+Name: 		Brake_Pedal_Sem
+Resource(s):	brake_pedal,engine
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Eng_Start_Stop_Sem
+Resource(s):	eng_start_stop,engine, throttle
+Pend Task(s):	IO_task, engine_task
+Post Task(s):	IO_task, engine_task
+--------------------------------------------------------------------------------
+Name: 		Cruise_Speed_Sem
+Resource(s):	cruise_speed 
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Speed_kmh_Sem
+Resource(s):	speed_in_km 
+Pend Task(s):	IO_task, engine_task,
+Post Task(s):	IO_task, engine_task,
+--------------------------------------------------------------------------------
+Name: 		Accel_Pedal_Sem
+Resource(s):	accel_pedal,
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Speed_Sem
+Resource(s):	park, speed,
+Pend Task(s):	IO_task, vehicle_task
+Post Task(s):	IO_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		SW4_Sem
+Resource(s):	SW4
+Pend Task(s):	IO_task, vehicle_task
+Post Task(s):	IO_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		SW3_Sem
+Resource(s):	SW3
+Pend Task(s):	IO_task, vehicle_task
+Post Task(s):	IO_task, vehicle_task
+--------------------------------------------------------------------------------
+====================
+List of Mailbox(es)
+====================
+Name: 		LocationMbox
+Message(s):	location
+Pend Task(s):	IO_task
+Post Task(s):	vehicle_task
+
+====================
+List of Message queue(s)
+====================
+Name: 		ThrottleQ
+Resource:	throttle
+Pend Task(s):	vehicle_task
+Post Task(s):	engine_task
+--------------------------------------------------------------------------------
+
+
+====================
+List of Tasks
+====================
+Engine task:	task parameters: task ID = 2, OSTimeDlyHMSM(0,0,0,125) 
+I/O task:	task parameters: task ID = 1, OSTimeDlyHMSM(0,0,0,125)  
+Vehicle task:	task parameters: task ID = 3, OSTimeDlyHMSM(0,0,0,125) 
+.....
+.....
+
+

@@ -1,0 +1,62 @@
+====================
+List of Semaphore(s)
+====================
+Name: 		Key_Fob_Sem
+Resource(s):	key_fob,engine
+Pend Task(s):	IO_task, engine_task
+Post Task(s):	IO_task, engine_task
+--------------------------------------------------------------------------------
+Name: 		Brake_Pedal_Sem
+Resource(s):	brake_pedal,engine
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Eng_Start_Stop_Sem
+Resource(s):	eng_start_stop,engine, throttle
+Pend Task(s):	IO_task, engine_task
+Post Task(s):	IO_task, engine_task
+--------------------------------------------------------------------------------
+Name: 		Engine_Sem
+Resource(s):	engine, 
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Park_Sem
+Resource(s):	park, engine, 
+Pend Task(s):	IO_task, engine_task,
+Post Task(s):	IO_task, engine_task,
+--------------------------------------------------------------------------------
+Name: 		Accel_Pedal_Sem
+Resource(s):	accel_pedal,
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Speed_Sem
+Resource(s):	park, speed,
+Pend Task(s):	IO_task, vehicle_task
+Post Task(s):	IO_task, vehicle_task
+--------------------------------------------------------------------------------
+Name: 		Drive_Neutral_Sem
+Resource(s):	drive_neutral,
+Pend Task(s):	IO_task, engine_task, vehicle_task
+Post Task(s):	IO_task, engine_task, vehicle_task
+--------------------------------------------------------------------------------
+====================
+List of Mailbox(es)
+====================
+Name: 		LocationMbox
+Message(s):	location
+Pend Task(s):	IO_task
+Post Task(s):	vehicle_task
+
+====================
+List of Message queue(s)
+====================
+Name: 		ThrottleQ
+Resource:	throttle
+Pend Task(s):	vehicle_task
+Post Task(s):	engine_task
+--------------------------------------------------------------------------------
+
+
+

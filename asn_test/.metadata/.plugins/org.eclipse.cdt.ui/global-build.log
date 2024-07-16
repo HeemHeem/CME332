@@ -1,0 +1,27 @@
+16:48:55 **** Incremental Build of configuration Nios II for project test_prob_6 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+[BSP build complete]
+Info: Compiling hello_ucosii.c to obj/default/hello_ucosii.o
+nios2-elf-gcc -xc -MP -MMD -c -I/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp//UCOSII/inc -I/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp//HAL/inc -I/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/ -I/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -D__ucosii__    -O0 -g -Wall   -mhw-div -mcustom-fpu-cfg=60-2 -mhw-mul -mhw-mulx -mgpopt=global  -o obj/default/hello_ucosii.o hello_ucosii.c
+Info: Linking test_prob_6.elf
+nios2-elf-g++  -T'/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp//linker.x' -msys-crt0='/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp//obj/HAL/src/crt0.o' -msys-lib=ucosii_bsp -L/home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/  -mcustom-fpu-cfg=60-2  -Wl,-Map=test_prob_6.map   -O0 -g -Wall   -mhw-div -mcustom-fpu-cfg=60-2 -mhw-mul -mhw-mulx -mgpopt=global  -o test_prob_6.elf obj/default/hello_ucosii.o -lm -msys-lib=m
+nios2-elf-insert test_prob_6.elf --thread_model ucosii --cpu_name Nios2 --qsys true --simulation_enabled false --id 0 --sidp 0xff202040 --timestamp 1555017408 --stderr_dev JTAG_UART --stdin_dev JTAG_UART --stdout_dev JTAG_UART --sopc_system_name Computer_System --quartus_project_dir "/opt/intelFPGA/20.1.1/University_Program/Computer_Systems/DE2-115/DE2-115_Computer/verilog" --sopcinfo /opt/intelFPGA/20.1.1/University_Program/Computer_Systems/DE2-115/DE2-115_Computer/verilog/Computer_System.sopcinfo
+Info: (test_prob_6.elf) 98 KBytes program size (code + initialized data).
+Info:                   65430 KBytes free for stack + heap.
+Info: Creating test_prob_6.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source test_prob_6.elf >test_prob_6.objdump
+[test_prob_6 build complete]
+16:49:13 **** Build of configuration Nios II for project test_prob_6 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+[BSP build complete]
+[test_prob_6 build complete]
+16:49:13 **** Incremental Build of configuration Nios II for project test_prob_6 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+[BSP build complete]
+[test_prob_6 build complete]

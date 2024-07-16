@@ -1,0 +1,583 @@
+///*************************************************************************
+//* Copyright (c) 2004 Altera Corporation, San Jose, California, USA.      *
+//* All rights reserved. All use of this software and documentation is     *
+//* subject to the License Agreement located at the end of this file below.*
+//**************************************************************************
+//* Description:                                                           *
+//* The following is a simple hello world program running MicroC/OS-II.The *
+//* purpose of the design is to be a very simple application that just     *
+//* demonstrates MicroC/OS-II running on NIOS II.The design doesn't account*
+//* for issues such as checking system call return codes. etc.             *
+//*                                                                        *
+//* Requirements:                                                          *
+//*   -Supported Example Hardware Platforms                                *
+//*     Standard                                                           *
+//*     Full Featured                                                      *
+//*     Low Cost                                                           *
+//*   -Supported Development Boards                                        *
+//*     Nios II Development Board, Stratix II Edition                      *
+//*     Nios Development Board, Stratix Professional Edition               *
+//*     Nios Development Board, Stratix Edition                            *
+//*     Nios Development Board, Cyclone Edition                            *
+//*   -System Library Settings                                             *
+//*     RTOS Type - MicroC/OS-II                                           *
+//*     Periodic System Timer                                              *
+//*   -Know Issues                                                         *
+//*     If this design is run on the ISS, terminal output will take several*
+//*     minutes per iteration.                                             *
+//**************************************************************************/
+//
+//
+//#include <stdio.h>
+//#include "includes.h"
+//#include "address_map_nios2.h"
+//
+///* Definition of Task Stacks */
+//#define   TASK_STACKSIZE       2048
+//OS_STK    task1_stk[TASK_STACKSIZE];
+//OS_STK    task2_stk[TASK_STACKSIZE];
+//OS_STK	  task3_stk[TASK_STACKSIZE];
+///* Definition of Task Priorities */
+//
+//#define TASK1_PRIORITY      1
+//#define TASK2_PRIORITY      2
+//#define TASK3_PRIORITY		3
+//
+//
+///* GLOBAL VARIABLES FOR SEMAPHORES??? */
+//volatile int *red_LED_ptr = (int *) LEDR_BASE;
+//volatile int *switch_ptr = (int *)SW_BASE;
+//volatile int *hex3_0_ptr = (int *) HEX3_HEX0_BASE;
+//volatile int *green_LED_ptr = (int * ) LEDG_BASE;
+//volatile int * interval_timer_ptr = (int *)TIMER_BASE; // interval timer base address
+//volatile int * KEY_ptr = (int *)KEY_BASE; // pushbutton KEY address
+//
+//// global variables
+//volatile int frame = 0;
+//volatile int T1_flag = 0;
+//volatile int T2_flag = 0;
+//volatile int T3_flag = 0;
+//volatile int frame_overun = 0;
+//
+//volatile int calculate = ON;
+//volatile int speed_timer = 0;
+//double speed = 0;
+//int acceleration = 0;
+//int speed_in_km = 0;
+//
+//// engine tasks variables
+//int throttle;
+//int engine;
+////int turn_on_off_flag;
+//volatile int eng_timer;
+//
+//// I/O task variables
+//int key_fob;
+//int drive_neutral;
+//int park;
+//volatile int brake_pedal;
+//volatile int accel_pedal;
+//volatile int eng_start_stop;
+//
+//
+//int sw_value;
+//int sw9;
+//int sw1;
+//int sw0;
+//int key_value;
+//int key3;
+//int key2;
+//int key0;
+//int* hex_array; // hold 3 numbers
+//
+//
+//
+///* Prints "Hello World" and sleeps for three seconds */
+//void IO_task(void* pdata)
+//{
+//  while (1)
+//  {
+//
+//	// do IO tasks
+//    printf("Hello from task1\n");
+//    OSTimeDlyHMSM(0, 0, 3, 0);
+//  }
+//}
+///* Prints "Hello World" and sleeps for three seconds */
+//void engine_task(void* pdata)
+//{
+//  while (1)
+//  {
+//	// do engine tasks
+//    printf("Hello from task2\n");
+//    OSTimeDlyHMSM(0, 0, 3, 0);
+//  }
+//}
+//
+//void vehicle_task(void *pdata)
+//{
+//	while(1)
+//	{
+//		//do vehicle task
+//	}
+//}
+//
+///* The main function creates two task and starts multi-tasking */
+//int main(void)
+//{
+//
+//  printf("MicroC/OS-II Licensing Terms\n");
+//  printf("============================\n");
+//  printf("Micrium\'s uC/OS-II is a real-time operating system (RTOS) available in source code.\n");
+//  printf("This is not open-source software.\n");
+//  printf("This RTOS can be used free of charge only for non-commercial purposes and academic projects,\n");
+//  printf("any other use of the code is subject to the terms of an end-user license agreement\n");
+//  printf("for more information please see the license files included in the BSP project or contact Micrium.\n");
+//  printf("Anyone planning to use a Micrium RTOS in a commercial product must purchase a commercial license\n");
+//  printf("from the owner of the software, Silicon Laboratories Inc.\n");
+//  printf("Licensing information is available at:\n");
+//  printf("Phone: +1 954-217-2036\n");
+//  printf("Email: sales@micrium.com\n");
+//  printf("URL: www.micrium.com\n\n\n");
+//
+//  OSTaskCreateExt(task1,
+//                  NULL,
+//                  (void *)&task1_stk[TASK_STACKSIZE-1],
+//                  TASK1_PRIORITY,
+//                  TASK1_PRIORITY,
+//                  task1_stk,
+//                  TASK_STACKSIZE,
+//                  NULL,
+//                  0);
+//
+//
+//  OSTaskCreateExt(task2,
+//                  NULL,
+//                  (void *)&task2_stk[TASK_STACKSIZE-1],
+//                  TASK2_PRIORITY,
+//                  TASK2_PRIORITY,
+//                  task2_stk,
+//                  TASK_STACKSIZE,
+//                  NULL,
+//                  0);
+//  OSStart();
+//  return 0;
+//}
+//
+///******************************************************************************
+//*                                                                             *
+//* License Agreement                                                           *
+//*                                                                             *
+//* Copyright (c) 2004 Altera Corporation, San Jose, California, USA.           *
+//* All rights reserved.                                                        *
+//*                                                                             *
+//* Permission is hereby granted, free of charge, to any person obtaining a     *
+//* copy of this software and associated documentation files (the "Software"),  *
+//* to deal in the Software without restriction, including without limitation   *
+//* the rights to use, copy, modify, merge, publish, distribute, sublicense,    *
+//* and/or sell copies of the Software, and to permit persons to whom the       *
+//* Software is furnished to do so, subject to the following conditions:        *
+//*                                                                             *
+//* The above copyright notice and this permission notice shall be included in  *
+//* all copies or substantial portions of the Software.                         *
+//*                                                                             *
+//* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  *
+//* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,    *
+//* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE *
+//* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      *
+//* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING     *
+//* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER         *
+//* DEALINGS IN THE SOFTWARE.                                                   *
+//*                                                                             *
+//* This agreement shall be governed in all respects by the laws of the State   *
+//* of California and by the laws of the United States of America.              *
+//* Altera does not recommend, suggest or require that this reference design    *
+//* file be used in conjunction or combination with any other product.          *
+//******************************************************************************/
+/*************************************************************************
+* Copyright (c) 2004 Altera Corporation, San Jose, California, USA.      *
+* All rights reserved. All use of this software and documentation is     *
+* subject to the License Agreement located at the end of this file below.*
+**************************************************************************
+* Description:                                                           *
+* The following is a simple hello world program running MicroC/OS-II.The *
+* purpose of the design is to be a very simple application that just     *
+* demonstrates MicroC/OS-II running on NIOS II.The design doesn't account*
+* for issues such as checking system call return codes. etc.             *
+*                                                                        *
+* Requirements:                                                          *
+*   -Supported Example Hardware Platforms                                *
+*     Standard                                                           *
+*     Full Featured                                                      *
+*     Low Cost                                                           *
+*   -Supported Development Boards                                        *
+*     Nios II Development Board, Stratix II Edition                      *
+*     Nios Development Board, Stratix Professional Edition               *
+*     Nios Development Board, Stratix Edition                            *
+*     Nios Development Board, Cyclone Edition                            *
+*   -System Library Settings                                             *
+*     RTOS Type - MicroC/OS-II                                           *
+*     Periodic System Timer                                              *
+*   -Know Issues                                                         *
+*     If this design is run on the ISS, terminal output will take several*
+*     minutes per iteration.                                             *
+**************************************************************************/
+
+/* TODO:
+		- adjust IO_Task
+		- set up semaphores for tasks
+		- adjust speed calculations
+		- adjust how long the buttons should be held when starting engine
+*/
+
+/* NOTES: - Semaphores are for shared resources. In this case since the IO task controls how everything works
+			there should be a semaphore for controlling it (performing a write), and then two other semaphores
+			for engine_task and vehicle_task that are performing reads on it.
+*/
+
+#include <stdio.h>
+#include "includes.h"
+#include "address_map_nios2.h" // might not need this
+//#include "systems.h" // this may be the header file that is should be used for addresses
+#include "globals.h"
+/* Definition of Task Stacks */
+#define   TASK_STACKSIZE       2048
+OS_STK    task1_stk[TASK_STACKSIZE];
+OS_STK    task2_stk[TASK_STACKSIZE];
+OS_STK	  task3_stk[TASK_STACKSIZE];
+/* Definition of Task Priorities */
+
+#define TASK1_PRIORITY      1
+#define TASK2_PRIORITY      2
+#define TASK3_PRIORITY		3
+
+
+/* GLOBAL VARIABLES FOR SEMAPHORES??? */
+volatile int *red_LED_ptr = (int *) LEDR_BASE;
+volatile int *switch_ptr = (int *)SW_BASE;
+volatile int *hex3_0_ptr = (int *) HEX3_HEX0_BASE;
+volatile int *green_LED_ptr = (int * ) LEDG_BASE;
+volatile int * interval_timer_ptr = (int *)TIMER_BASE; // interval timer base address
+volatile int * KEY_ptr = (int *)KEY_BASE; // pushbutton KEY address
+
+// global variables
+volatile int frame = 0;
+volatile int T1_flag = 0;
+volatile int T2_flag = 0;
+volatile int T3_flag = 0;
+volatile int frame_overun = 0;
+
+volatile int calculate = ON;
+volatile int speed_timer = 0;
+double speed = 0;
+int acceleration = 0;
+int speed_in_km = 0;
+
+// engine tasks variables
+int throttle;
+int engine;
+//int turn_on_off_flag;
+volatile int eng_timer;
+
+// I/O task variables
+int key_fob;
+int drive_neutral;
+int park;
+volatile int brake_pedal;
+volatile int accel_pedal;
+volatile int eng_start_stop;
+
+
+int sw_value;
+int sw9;
+int sw1;
+int sw0;
+int key_value;
+int key3;
+int key2;
+int key0;
+int* hex_array; // hold 3 numbers
+
+//function declarations
+int hex_display_cnvtr(int value);
+void digit_separator(int *array, int numbers);
+void engine_task(void* pdata);
+void IO_task(void* pdata);
+void vehicle_task(void* pdata);
+
+/* The main function creates two task and starts multi-tasking */
+int main(void)
+{
+    /* set the interval timer*/
+    int counter                 = 25000; // 1/(50 MHz) x (25000) = 0.5 msec frame
+    *(interval_timer_ptr + 0x2) = (counter & 0xFFFF);
+    *(interval_timer_ptr + 0x3) = (counter >> 16) & 0xFFFF;
+
+    /* start interval timer, enable its interrupts */
+    *(interval_timer_ptr + 1) = 0x6; // STOP = 0, START = 1, CONT = 1, ITO = 0
+
+  OSTaskCreateExt(IO_task,
+                  NULL,
+                  (void *)&task1_stk[TASK_STACKSIZE-1],
+                  TASK1_PRIORITY,
+                  TASK1_PRIORITY,
+                  task1_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+
+
+  OSTaskCreateExt(engine_task,
+                  NULL,
+                  (void *)&task2_stk[TASK_STACKSIZE-1],
+                  TASK2_PRIORITY,
+                  TASK2_PRIORITY,
+                  task2_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+
+  OSTaskCreateExt(vehicle_task,
+                  NULL,
+                  (void *)&task3_stk[TASK_STACKSIZE-1],
+                  TASK3_PRIORITY,
+                  TASK3_PRIORITY,
+                  task3_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+  OSStart();
+  return 0;
+}
+
+/**
+ * takes in a pointer to an array, and an integer of 3 digits and appends them into a 3 digit array
+ *
+ */
+void digit_separator(int* array, int numbers){
+    int dig = numbers;
+    for(int i=2; i >= 0; i--){
+
+        array[i] = dig%10;
+        dig/=10;
+    }
+}
+
+
+
+/**
+ * converts integer value to the corresponding hex segments value.
+ *
+ */
+int hex_display_cnvtr(int value){
+    switch(value){
+        case 1:
+            return 0x06;
+        case 2:
+            return 0x5b;
+        case 3:
+            return 0x4f;
+
+        case 4:
+            return 0x66;
+
+        case 5:
+            return 0x6d;
+        case 6:
+            return 0x7d;
+        case 7:
+            return 0x07;
+        case 8:
+            return 0x7f;
+        case 9:
+            return 0x6f;
+        default:
+            // this is for 0
+            return 0x3f;
+
+    }
+
+}
+
+/* Prints "Hello World" and sleeps for three seconds */
+void IO_task(void* pdata)
+{
+  while (1)
+  {
+
+	/* do IO tasks */
+	//T1_flag = 1;
+	sw9 = *switch_ptr & 0x200; //sw9
+	sw1 = *switch_ptr & 0x2; //sw1
+	sw0 = *switch_ptr & 0x1; // sw0
+	key3 = *KEY_ptr & 0x8;
+	key2 = *KEY_ptr & 0x4;
+	key0 = *KEY_ptr & 0x1;
+	*red_LED_ptr = sw9 + sw1 + sw0;
+	*green_LED_ptr = key0 + key2 + key3;
+
+	//key fob
+	if (sw9 == 0x200){
+	   key_fob = ON;
+	}
+	else{
+		key_fob = OFF;
+	}
+
+	//drive or neutral
+	if (sw1 == 0x2){
+		drive_neutral = ON;
+	}
+	else{
+		drive_neutral = OFF;
+	}
+
+	// park on/off
+	if(sw0 == 0x1 && speed == 0){
+		park = ON;
+	}
+	else{
+		park = OFF;
+	}
+
+	// brake pedal
+	if(key3 == 0x8){
+	   brake_pedal = ON;
+	}
+	else{
+		brake_pedal = OFF;
+	}
+	// accel_pedal
+	if(key2 == 0x4){
+	   accel_pedal = ON;
+	}
+	else{
+		accel_pedal = OFF;
+	}
+
+	// eng_start_stop
+	if(key0 == 0x1){
+		eng_start_stop = ON;
+	}
+	else{
+		eng_start_stop = OFF;
+	}
+
+
+	speed_in_km = speed*3.6;
+	//check for if speed is over 999 or < 000. ie set a cap
+	if (speed_in_km > 999){
+		speed_in_km = 999;
+	}
+	else if (speed_in_km < 0){
+		speed_in_km = 0;
+	}
+
+	if(engine == ON){
+	  digit_separator(hex_array, speed_in_km);
+		*(hex3_0_ptr) = (hex_display_cnvtr(hex_array[0])<<16) + (hex_display_cnvtr(hex_array[1])<<8)+ hex_display_cnvtr(hex_array[2]);
+	}
+	else{
+		*(hex3_0_ptr) = 0;
+	}
+
+
+    printf("Hello from task1\n");
+    OSTimeDlyHMSM(0, 0, 3, 0);
+  }
+}
+/* Prints "Hello World" and sleeps for three seconds */
+void engine_task(void* pdata)
+{
+  while (1)
+  {
+	// do engine tasks
+	// remember to put in the 1 second counter
+	if((key_fob == ON) && (brake_pedal == ON) && (eng_start_stop == ON)){
+
+		// check that its been held for longer than 1 second. still in the works
+		if(eng_timer > 2000){
+			engine = ON;
+			//eng_timer = 0;
+		}
+	}
+
+	// turn off the engine
+	if ((park == ON) && (eng_start_stop == ON) && (engine == ON)){
+		engine = OFF;
+	}
+
+	if((accel_pedal == ON) && (engine == ON) ){
+		throttle = 6;
+	}
+	else{
+		throttle = 0;
+	}
+
+
+    printf("Hello from task2\n");
+    OSTimeDlyHMSM(0, 0, 3, 0);
+  }
+}
+
+void vehicle_task(void *pdata)
+{
+	while(1)
+	{
+		//do vehicle task
+	    if((brake_pedal == ON)){
+	        acceleration = -6;
+	        if(speed <= 0){
+	            acceleration = 0;
+	        }
+
+	    }
+	    else if((accel_pedal == ON) && (brake_pedal == OFF)){
+	        acceleration = 0.5*throttle;
+	    }
+	    else{
+	        acceleration = 0;
+	    }
+	    // calculate speed
+	    if ((drive_neutral == ON) && (calculate == ON)){
+	       speed = speed + acceleration * 0.0015; // 0.0015 because it updates every 1.5 ms
+	       calculate = OFF;
+	       //speed_timer = 0;
+	    }
+
+	    if (speed < 0){
+	        speed = 0;
+	    }
+	}
+}
+
+/******************************************************************************
+*                                                                             *
+* License Agreement                                                           *
+*                                                                             *
+* Copyright (c) 2004 Altera Corporation, San Jose, California, USA.           *
+* All rights reserved.                                                        *
+*                                                                             *
+* Permission is hereby granted, free of charge, to any person obtaining a     *
+* copy of this software and associated documentation files (the "Software"),  *
+* to deal in the Software without restriction, including without limitation   *
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,    *
+* and/or sell copies of the Software, and to permit persons to whom the       *
+* Software is furnished to do so, subject to the following conditions:        *
+*                                                                             *
+* The above copyright notice and this permission notice shall be included in  *
+* all copies or substantial portions of the Software.                         *
+*                                                                             *
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  *
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,    *
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE *
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      *
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING     *
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER         *
+* DEALINGS IN THE SOFTWARE.                                                   *
+*                                                                             *
+* This agreement shall be governed in all respects by the laws of the State   *
+* of California and by the laws of the United States of America.              *
+* Altera does not recommend, suggest or require that this reference design    *
+* file be used in conjunction or combination with any other product.          *
+******************************************************************************/

@@ -1,0 +1,3 @@
+18:34:26 **** Clean-only build of configuration Nios II for project ex5_ucosii_ccs ****
+make clean 
+[ex5_ucosii_ccs clean complete]

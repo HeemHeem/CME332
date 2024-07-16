@@ -1,0 +1,416 @@
+
+/* TODO:
+		- adjust IO_Task
+		- set up semaphores for tasks
+		- adjust speed calculations
+		- adjust how long the buttons should be held when starting engine
+*/
+
+/* NOTES: - Semaphores are for shared resources. In this case since the IO task controls how everything works
+			there should be a semaphore for controlling it (performing a write), and then two other semaphores
+			for engine_task and vehicle_task that are performing reads on it.
+*/
+
+#include <stdio.h>
+#include "includes.h"
+#include "address_map_nios2.h"
+#include "globals.h"
+
+/* Definition of Task Stacks */
+#define   TASK_STACKSIZE       2048
+OS_STK    task1_stk[TASK_STACKSIZE];
+OS_STK    task2_stk[TASK_STACKSIZE];
+OS_STK	  task3_stk[TASK_STACKSIZE];
+
+/* Definition of Task Priorities */
+#define TASK1_PRIORITY      1
+#define TASK2_PRIORITY      2
+#define TASK3_PRIORITY		3
+
+
+/* GLOBAL VARIABLES FOR SEMAPHORES??? */
+volatile int *red_LED_ptr = (int *) LEDR_BASE;
+volatile int *switch_ptr = (int *)SW_BASE;
+volatile int *hex3_0_ptr = (int *) HEX3_HEX0_BASE;
+volatile int *green_LED_ptr = (int * ) LEDG_BASE;
+volatile int * interval_timer_ptr = (int *)TIMER_BASE; // interval timer base address
+volatile int * KEY_ptr = (int *)KEY_BASE; // pushbutton KEY address
+
+// global variables
+int calculate = ON;
+int speed_timer = 0;
+double speed = 0;
+double old_time = 0;
+double acceleration = 0;
+int speed_in_km = 0;
+
+// engine tasks variables
+int throttle;
+int engine;
+int eng_timer = 0;
+
+// I/O task variables
+int key_fob;
+int drive_neutral;
+int park;
+int brake_pedal;
+int accel_pedal;
+int eng_start_stop;
+
+int sw_value;
+int sw9;
+int sw1;
+int sw0;
+int key_value;
+int key3;
+int key2;
+int key0;
+int* hex_array; // hold 3 numbers
+
+// SEMAPHORES
+OS_EVENT *Key_Fob_Sem;
+OS_EVENT *Brake_Pedal_Sem;
+OS_EVENT *Eng_Start_Stop_Sem;
+OS_EVENT *Engine_Sem;
+OS_EVENT *Park_Sem;
+OS_EVENT *Accel_Pedal_Sem;
+OS_EVENT *Throttle_Sem;
+OS_EVENT *Speed_Sem;
+OS_EVENT *Drive_Neutral_Sem;
+
+//function declarations
+int hex_display_cnvtr(int value);
+void digit_separator(int *array, int numbers);
+void engine_task(void* pdata);
+void IO_task(void* pdata);
+void vehicle_task(void* pdata);
+
+/* The main function creates two task and starts multi-tasking */
+int main(void)
+{
+	Key_Fob_Sem = OSSEMCreate(1);
+	Brake_Pedal_Sem = OSSEMCreate(1);
+	Eng_Start_Stop_Sem = OSSEMCreate(1);
+	Engine_Sem = OSSEMCreate(1);
+	Park_Sem = OSSEMCreate(1);
+	Accel_Pedal_Sem = OSSEMCreate(1);
+	Throttle_Sem = OSSEMCreate(1);
+	Speed_Sem = OSSEMCreate(1);
+	Drive_Neutral_Sem = OSSEMCreate(1);
+
+	OSTaskCreateExt(IO_task,
+                  NULL,
+                  (void *)&task1_stk[TASK_STACKSIZE-1],
+                  TASK1_PRIORITY,
+                  TASK1_PRIORITY,
+                  task1_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+	OSTaskCreateExt(engine_task,
+                  NULL,
+                  (void *)&task2_stk[TASK_STACKSIZE-1],
+                  TASK2_PRIORITY,
+                  TASK2_PRIORITY,
+                  task2_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+	OSTaskCreateExt(vehicle_task,
+                  NULL,
+                  (void *)&task3_stk[TASK_STACKSIZE-1],
+                  TASK3_PRIORITY,
+                  TASK3_PRIORITY,
+                  task3_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+	OSStart();
+	return 0;
+}
+
+/**
+ * takes in a pointer to an array, and an integer of 3 digits and appends them into a 3 digit array
+ *
+ */
+void digit_separator(int* array, int numbers){
+    int dig = numbers;
+    for(int i=2; i >= 0; i--){
+
+        array[i] = dig%10;
+        dig/=10;
+    }
+}
+
+
+
+/**
+ * converts integer value to the corresponding hex segments value.
+ *
+ */
+int hex_display_cnvtr(int value){
+    switch(value){
+        case 1:
+            return 0x06;
+        case 2:
+            return 0x5b;
+        case 3:
+            return 0x4f;
+
+        case 4:
+            return 0x66;
+
+        case 5:
+            return 0x6d;
+        case 6:
+            return 0x7d;
+        case 7:
+            return 0x07;
+        case 8:
+            return 0x7f;
+        case 9:
+            return 0x6f;
+        default:
+            // this is for 0
+            return 0x3f;
+
+    }
+
+}
+
+/* Prints "Hello World" and sleeps for three seconds */
+void IO_task(void* pdata)
+{
+	INT8U err;
+
+	while (1)
+	{
+		/* do IO tasks */
+		//T1_flag = 1;
+		sw9 = *switch_ptr & 0x200; //sw9
+		sw1 = *switch_ptr & 0x2; //sw1
+		sw0 = *switch_ptr & 0x1; // sw0
+		key3 = *KEY_ptr & 0x8;
+		key2 = *KEY_ptr & 0x4;
+		key0 = *KEY_ptr & 0x1;
+		*red_LED_ptr = sw9 + sw1 + sw0;
+		*green_LED_ptr = key0 + key2 + key3;
+
+		OSSemPend(Key_Fob_Sem, 0, &err);
+		//key fob
+		if (sw9 == 0x200){
+		   key_fob = ON;
+		}
+		else{
+			key_fob = OFF;
+		}
+		OSSemPost(Key_Fob_Sem);
+
+		OSSemPend(Drive_Neutral_Sem, 0, &err);
+		//drive or neutral
+		if (sw1 == 0x2){
+			drive_neutral = ON;
+		}
+		else{
+			drive_neutral = OFF;
+		}
+		OSSemPost(Drive_Neutral_Sem);
+
+		OSSemPend(Park_Sem, 0, &err);
+		OSSemPend(Speed_Sem,0, &err);
+		// park on/off
+		if(sw0 == 0x1 && speed == 0){
+			park = ON;
+		}
+		else{
+			park = OFF;
+		}
+		OSSemPost(Park_Sem);
+
+		OSSemPend(Brake_Pedal_Sem, 0, &err);
+		// brake pedal
+		if(key3 == 0x8){
+		   brake_pedal = ON;
+		}
+		else{
+			brake_pedal = OFF;
+		}
+		OSSemPost(Brake_Pedal_Sem);
+
+		OSSemPend(Accel_Pedal_Sem, 0, &err);
+		// accel_pedal
+		if(key2 == 0x4){
+		   accel_pedal = ON;
+		}
+		else{
+			accel_pedal = OFF;
+		}
+		OSSemPost(Accel_Pedal_Sem);
+
+		OSSemPend(Eng_Start_Stop_Sem, 0, &err);
+		// eng_start_stop
+		if(key0 == 0x1){
+			eng_start_stop = ON;
+		}
+		else{
+			eng_start_stop = OFF;
+		}
+		OSSemPost(Eng_Start_Stop_Sem);
+
+
+		speed_in_km = speed*3.6;
+		OSSemPost(Speed_Sem);
+		//check for if speed is over 999 or < 000. ie set a cap
+		if (speed_in_km > 999){
+			speed_in_km = 999;
+		}
+		else if (speed_in_km < 0){
+			speed_in_km = 0;
+		}
+
+		OSSemPend(Engine_Sem, 0, &err);
+		if(engine == ON){
+		  digit_separator(hex_array, speed_in_km);
+			*(hex3_0_ptr) = (hex_display_cnvtr(hex_array[0])<<16) + (hex_display_cnvtr(hex_array[1])<<8)+ hex_display_cnvtr(hex_array[2]);
+		}
+		else{
+			*(hex3_0_ptr) = 0;
+		}
+		OSSemPost(Engine_Sem);
+
+		//printf("Hello from task1\n");
+		OSTimeDlyHMSM(0,0,0,125);
+	  }
+}
+/* Prints "Hello World" and sleeps for three seconds */
+void engine_task(void* pdata)
+{
+	INT8U err;
+	while (1)
+	{
+	// do engine tasks
+	// remember to put in the 1 second counter
+		OSSemPend(Engine_Sem, 0, &err);
+		OSSemPend(Accel_Pedal_Sem, 0, &err);
+		OSSemPend(Key_Fob_Sem, 0, &err);
+		OSSemPend(Eng_Start_Stop_Sem, 0, &err);
+		OSSemPend(Throttle_Sem, 0 &err);
+		OSSemPend(Park_Sem, 0, &err);
+		OSSemPend(Brake_Pedal_Sem, 0, &err);
+		if((key_fob == ON) && (brake_pedal == ON) && (eng_start_stop == ON)){
+		//OSTimeDlyHMSM(0,0,1,0);
+		// check that its been held for longer than 1 second. still in the works
+			eng_timer ++;
+			if(eng_timer > 8){
+				engine = ON;
+				eng_timer = 0;
+			}
+		}
+
+	// turn off the engine
+		if ((park == ON) && (eng_start_stop == ON) && (engine == ON)){
+			engine = OFF;
+		}
+
+		if((accel_pedal == ON) && (engine == ON) ){
+			throttle = 6;
+		}
+		else{
+			throttle = 0;
+		}
+
+		OSSemPost(Engine_Sem);
+		OSSemPost(Accel_Pedal_Sem);
+		OSSemPost(Key_Fob_Sem);
+		OSSemPost(Eng_Start_Stop_Sem);
+		OSSemPost(Throttle_Sem);
+		OSSemPost(Park_Sem);
+		OSSemPost(Brake_Pedal_Sem);
+
+
+		//printf("Hello from task2\n");
+		OSTimeDlyHMSM(0,0,0,125);
+	}
+}
+
+void vehicle_task(void *pdata)
+{
+	INT8U err;
+	while(1)
+	{
+		OSSemPend(Engine_Sem, 0, &err);
+		OSSemPend(Brake_Pedal_Sem, 0, &err);
+		OSSemPend(Speed_Sem,0, &err);
+		OSSemPend(Accel_Pedal_Sem, 0, &err);
+		OSSemPend(Drive_Neutral_Sem, 0, &err);
+
+		if (engine == ON){
+
+			//do vehicle task
+			if((brake_pedal == ON)){
+				acceleration = -6;
+				if(speed <= 0){
+					acceleration = 0;
+				}
+
+			}
+			else if((accel_pedal == ON) && (brake_pedal == OFF)){
+				acceleration = 0.5*throttle;
+			}
+			else{
+				acceleration = 0;
+			}
+			// calculate speed
+			if (drive_neutral == ON){// && (engine == ON)){
+
+			   speed = speed + acceleration *0.125; // 0.0015 because it updates every 1.5 ms
+			   printf("%f\n", speed);
+			   //calculate = OFF;
+			   //speed_timer = 0;
+			}
+
+			if (speed < 0){
+				speed = 0;
+			}
+		}
+
+		OSSemPost(Engine_Sem);
+		OSSemPost(Brake_Pedal_Sem);
+		OSSemPost(Speed_Sem);
+		OSSemPost(Accel_Pedal_Sem);
+		OSSemPost(Drive_Neutral_Sem);
+	    //printf("Hello from task3\n");
+		OSTimeDlyHMSM(0,0,0,125);
+	}
+}
+
+/******************************************************************************
+*                                                                             *
+* License Agreement                                                           *
+*                                                                             *
+* Copyright (c) 2004 Altera Corporation, San Jose, California, USA.           *
+* All rights reserved.                                                        *
+*                                                                             *
+* Permission is hereby granted, free of charge, to any person obtaining a     *
+* copy of this software and associated documentation files (the "Software"),  *
+* to deal in the Software without restriction, including without limitation   *
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,    *
+* and/or sell copies of the Software, and to permit persons to whom the       *
+* Software is furnished to do so, subject to the following conditions:        *
+*                                                                             *
+* The above copyright notice and this permission notice shall be included in  *
+* all copies or substantial portions of the Software.                         *
+*                                                                             *
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  *
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,    *
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE *
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER      *
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING     *
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER         *
+* DEALINGS IN THE SOFTWARE.                                                   *
+*                                                                             *
+* This agreement shall be governed in all respects by the laws of the State   *
+* of California and by the laws of the United States of America.              *
+* Altera does not recommend, suggest or require that this reference design    *
+* file be used in conjunction or combination with any other product.          *
+******************************************************************************/

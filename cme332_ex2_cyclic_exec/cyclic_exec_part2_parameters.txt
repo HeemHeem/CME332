@@ -1,0 +1,33 @@
+====================
+Task parameters all in ms
+====================
+Engine task:	Te (0, 1.5, 0.333, 1.5)
+I/O task:	Tio(0, 1.5, 0.374, 1.5)
+Vehicle task:	Tv (0, 1.5, 0.348, 1.5)
+
+
+====================
+Hyperperiod (H)
+
+H = lcm(1.5,1.5,1.5) = 1.5
+====================
+
+
+====================
+Frame size (f)
+f = 0.5
+====================
+
+
+====================
+Time table 
+since the frame size is 0.5ms, I am running I/O task first, then engine, then vehicle task
+so they are all released at time t=0, then 
+I/O executes in frame 1(0ms, engine task executes in frame 2(1ms), and vehicle task executes in frame 3(1.5ms) ... repeat
+	I/O	 engine	 vehicle
+====================
+Frame	1	2	3	... 
+--------------------------------------------------------------------------------
+Task(s) I/o	engine	vehicle
+
+

@@ -1,0 +1,2 @@
+The maximum execution time is 840 clock cycles and the minimum time is 338 clock cycles.
+NOTE: There was no debouncing done for the buttons so the time is very small.

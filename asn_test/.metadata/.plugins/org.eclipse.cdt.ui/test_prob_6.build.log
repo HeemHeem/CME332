@@ -1,0 +1,9 @@
+16:49:13 **** Incremental Build of configuration Nios II for project test_prob_6 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/asn_test/test_prob_6_bsp/
+[BSP build complete]
+[test_prob_6 build complete]
+
+16:49:13 Build Finished (took 159ms)
+

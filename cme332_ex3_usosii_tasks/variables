@@ -1,0 +1,34 @@
+shared variables
+key_fob
+brake_pedal
+eng_start_stop
+engine
+park
+accel_pedal
+throttle
+speed
+drive_neutral
+
+OSSemPend(Engine_Sem, 0, &err);
+OSSemPend(Accel_Pedal_Sem, 0, &err);
+OSSemPend(Key_Fob_Sem, 0, &err);
+OSSemPend(Eng_Start_Stop_Sem, 0, &err);
+OSSemPend(Drive_Neutral_Sem, 0, &err);
+OSSemPend(Park_Sem, 0, &err);
+OSSemPend(Speed_Sem,0, &err);
+OSSemPend(Brake_Pedal_Sem, 0, &err);
+OSSemPend(Throttle_Sem, 0 &err);
+
+
+
+
+OSSemPost(Key_Fob_Sem);
+OSSemPost(Drive_Neutral_Sem);
+OSSemPost(Park_Sem);
+OSSemPost(Brake_Pedal_Sem);
+OSSemPost(Accel_Pedal_Sem);
+OSSemPost(Eng_Start_Stop_Sem);
+OSSemPost(Speed_Sem);
+OSSemPost(Engine_Sem);
+OSSemPost(Throttle_Sem);
+

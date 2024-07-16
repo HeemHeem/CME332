@@ -1,0 +1,6 @@
+15:56:44 **** Clean-only build of configuration Nios II for project ex4_ucosii_sync ****
+make clean 
+[ex4_ucosii_sync clean complete]
+
+15:56:45 Build Finished (took 110ms)
+

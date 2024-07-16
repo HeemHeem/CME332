@@ -1,0 +1,6 @@
+11:48:54 **** Clean-only build of configuration Nios II for project ex6_ucosii_mutex_bsp ****
+make clean 
+[BSP clean complete]
+
+11:48:54 Build Finished (took 103ms)
+

@@ -1,0 +1,21 @@
+14:05:17 **** Build of configuration Nios II for project test1_bsp ****
+make all 
+[BSP build complete]
+14:07:30 **** Incremental Build of configuration Nios II for project test1 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+[BSP build complete]
+[test1 build complete]
+14:12:37 **** Incremental Build of configuration Nios II for project test1 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+[BSP build complete]
+[test1 build complete]
+14:12:59 **** Incremental Build of configuration Nios II for project test1 ****
+make all 
+Info: Building /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+make --no-print-directory -C /home/xix277/engr-ece/Winter_Sem_2022/CME332/test/test1_bsp/
+[BSP build complete]
+[test1 build complete]

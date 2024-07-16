@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+newSoftwareExampleWizardPage.defaultLocation=/home/xix277/engr-ece/Winter_Sem_2022/CME332/cme332_ex3_usosii_tasks/ex3_ucosii_tasks
+newSoftwareExampleWizardPage.sopcinfoFile=/opt/intelFPGA/20.1.1/University_Program/Computer_Systems/DE2-115/DE2-115_Computer/verilog/Computer_System.sopcinfo
+newSoftwareExampleWizardPage2.newBspLocation=/home/xix277/engr-ece/Winter_Sem_2022/CME332/cme332_ex3_usosii_tasks/ex3_ucosii_tasks_bsp
